@@ -1,6 +1,6 @@
 # Simulador de Frete Minimal
 
-Aplicação Streamlit para simulação de frete e tributos (foco em como executar).
+Aplicação Streamlit para simulação de frete e tributos.
 
 ## Pré-requisitos
 
