@@ -1,0 +1,1146 @@
+Rem Attribute VBA_ModuleType=VBAFormModule
+Option VBASupport 1
+
+
+
+Private Sub Calcularcom_Click()
+    Dim ValorPr As Double
+    Dim ValorFr As Double
+    Dim ValorMo As Double
+    Dim ValorIPI As Double
+    Dim IPI As Double
+    Dim Estadia As Double
+    Dim ValorDifal As Double
+    Dim ValorTx As Double
+    Dim DifalPc As Double
+    Dim TaxaPobreza As Double
+    Dim BaseDifal1 As Double
+    Dim BaseDifal2 As Double
+    Dim BaseDifal As Double
+    Dim GuiaDifal As Double
+    Dim GuiaFCP As Double
+    Dim PcDifal As Double
+    Dim DespAc As Double
+    Dim Multiplicador As Double
+    Dim FreteLiq As Double
+    Dim TImpFrete As Double
+    Dim DifalFrete As Double
+    Dim IPIFrete As Double
+    Dim FCPFrete As Double
+    Dim PISCOFINSFrete As Double
+    Dim IRPJFrete As Double
+    Dim CSLLFrete As Double
+    Dim ICMSFrete As Double
+    Dim ValorMontagem As Double
+    Dim ValorFrete As Double
+    Dim Montneg As Double
+    Dim FreteNeg As Double
+
+    ' Verificar se o ValorPr é numérico
+    If Not IsNumeric(Me.ValorPr.Value) Then
+        MsgBox "Por favor, insira o valor dos produtos.", vbExclamation
+        Exit Sub
+    End If
+    ValorPr = CDbl(Me.ValorPr.Value)
+    
+' Inicializar a Estadia com base no estado selecionado
+If Me.SelUF.Value = "São Paulo" And Me.SelCid.Value = "Capital" Then
+    ' Não considerar a Estadia para São Paulo - Capital
+    Estadia = 0
+Else
+    ' Verificar se Montneg está preenchido e é numérico
+    If Not IsEmpty(Me.Montneg.Value) And IsNumeric(Me.Montneg.Value) Then
+        Estadia = 0
+    Else
+        ' Verificar se o valor de Estadia é numérico
+        If Not IsNumeric(Me.Estadia.Value) Then
+            MsgBox "Por favor, insira a quilometragem.", vbExclamation
+            Exit Sub
+        End If
+        Estadia = CDbl(Me.Estadia.Value)
+    End If
+End If
+
+
+' Verificar qual valor de frete será utilizado
+If Not IsEmpty(Me.FreteNeg.Value) And IsNumeric(Me.FreteNeg.Value) Then
+    ValorFr = CDbl(Me.FreteNeg.Value)
+    
+ElseIf Me.Check1.Value = True Then
+    ValorFr = CDbl(Me.Transp1cot.Value)
+    
+ElseIf Me.Check2.Value = True Then
+    ValorFr = CDbl(Me.Transp2cot.Value)
+    
+ElseIf Me.NFrete.Value = True Then
+    ValorFr = 0
+    ValorFrete = 0
+    
+Else
+    MsgBox "Por favor, selecione uma opção de frete.", vbExclamation
+    Exit Sub
+End If
+
+
+    ' Inicializar a taxa de IPI
+    IPI = 0.0325 ' Taxa de IPI de 3.25%
+
+    ' Inicializar variáveis de DIFAL
+    If Me.SemInscricao.Value = True Then
+        If Me.SelUF.Value = "São Paulo" Then
+            ' Não calcular DIFAL para São Paulo
+            ValorDifal = 0
+            ValorTx = 0
+            
+            ' Calcular imposto de frete
+            IPIFrete = 500000 * IPI / (1 + IPI)
+            ICMSFrete = 500000 * ICMSFrete
+            PISCOFINSFrete = (500000 - IPIFrete - ICMSFrete) * 0.0365
+            IRPJFrete = 0.08 * (500000 - IPIFrete) * 0.25
+            CSLLFrete = 0.12 * (500000 - IPIFrete) * 0.09
+
+            TImpFrete = IPIFrete + PISCOFINSFrete + IRPJFrete + CSLLFrete + ICMSFrete
+            FreteLiq = 500000 - TImpFrete
+            
+            ' Verificar se FreteLiq é zero para evitar divisão por zero
+            If FreteLiq = 0 Then
+                MsgBox "Erro: Frete líquido é zero, o que causa uma divisão por zero.", vbExclamation
+                Exit Sub
+            End If
+            
+            Multiplicador = 500000 / FreteLiq
+
+
+            ' Calcular o valor do frete após multiplicador
+           
+
+            ' Inicializar ValorMontagem
+            ValorMontagem = 0
+
+            ' Calcular o valor da montagem
+            If Me.SelUF.Value = "São Paulo" And Me.SelCid.Value = "Capital" And Me.SelHora.Value = "Comercial" Then
+                ' Não considerar a Estadia para São Paulo - Capital
+                ValorMo = 0
+                 ValorFrete = 0
+         ElseIf Me.SelHora.Value = "Fora Hor. Com." Then
+    ' Para Fora Hor. Com., somente ValorMo deve ser 0
+    ValorMo = 0
+    ValorFrete = ValorFr * Multiplicador ' Calcular normalmente
+Else
+      ' Verificar se Montneg está preenchido e é numérico
+    If Not IsEmpty(Me.Montneg.Value) And IsNumeric(Me.Montneg.Value) Then
+        Montneg = CDbl(Me.Montneg.Value) ' Armazenar o valor em Montneg
+        ValorMo = Montneg ' Usar Montneg para ValorMo
+    Else
+         ValorMontagem = ValorPr * 0.035 + Estadia * 3.5
+    ValorMo = ValorMontagem * Multiplicador
+    End If
+
+    ValorFrete = ValorFr * Multiplicador ' Calcular ValorFrete normalmente
+End If
+
+            
+
+            BaseDifal1 = (ValorPr + ValorFrete + ValorMo) / 1
+            BaseDifal2 = 1 - IPI / (1 + IPI)
+            
+            ' Verificar se BaseDifal2 é zero para evitar divisão por zero
+            If BaseDifal2 = 0 Then
+                MsgBox "Erro: BaseDifal2 é zero, o que causa uma divisão por zero.", vbExclamation
+                Exit Sub
+            End If
+            
+            BaseDifal = BaseDifal1 / BaseDifal2
+            ValorDifal = 0
+            ValorTx = 0
+
+            ' Calcular o valor do IPI
+            ValorIPI = BaseDifal * IPI / (1 + IPI)
+
+            ' Calcular o valor da nota fiscal
+            Dim ValorNF As Double
+            ValorNF = ValorPr + ValorFrete + ValorIPI + ValorMo
+            DespAc = ValorMo
+            
+        Else
+            Dim wsDifal As Worksheet
+            Set wsDifal = ThisWorkbook.Sheets("Difal_FCP")
+
+            On Error Resume Next
+            PcDifal = Application.WorksheetFunction.VLookup(Me.SelUF.Value, wsDifal.Range("A:B"), 2, False)
+            TaxaPobreza = Application.WorksheetFunction.VLookup(Me.SelUF.Value, wsDifal.Range("A:C"), 3, False)
+            ICMSFrete = Application.WorksheetFunction.VLookup(Me.SelUF.Value, wsDifal.Range("A:D"), 4, False)
+            On Error GoTo 0
+
+            If IsError(PcDifal) Or IsError(TaxaPobreza) Or IsError(ICMSFrete) Then
+                MsgBox "Erro ao encontrar dados para o estado selecionado.", vbExclamation
+                Exit Sub
+            End If
+
+            ' Calcular imposto de frete
+            DifalFrete = 500000 * PcDifal
+            IPIFrete = 500000 * IPI / (1 + IPI)
+            ICMSFrete = 500000 * ICMSFrete
+            FCPFrete = 500000 * TaxaPobreza
+            PISCOFINSFrete = (500000 - IPIFrete - ICMSFrete) * 0.0365
+            IRPJFrete = 0.08 * (500000 - IPIFrete) * 0.25
+            CSLLFrete = 0.12 * (500000 - IPIFrete) * 0.09
+
+            TImpFrete = DifalFrete + IPIFrete + FCPFrete + PISCOFINSFrete + IRPJFrete + CSLLFrete + ICMSFrete
+            FreteLiq = 500000 - TImpFrete
+            
+            ' Verificar se FreteLiq é zero para evitar divisão por zero
+            If FreteLiq = 0 Then
+                MsgBox "Erro: Frete líquido é zero, o que causa uma divisão por zero.", vbExclamation
+                Exit Sub
+            End If
+            
+            Multiplicador = 500000 / FreteLiq
+
+        
+
+            ' Inicializar ValorMontagem
+            ValorMontagem = 0
+
+            
+                    ' Calcular o valor da montagem
+            If Me.SelUF.Value = "São Paulo" And Me.SelCid.Value = "Capital" And Me.SelHora.Value = "Comercial" Then
+                ' Não considerar a Estadia para São Paulo - Capital
+                ValorMo = 0
+                 ValorFrete = 0
+         ElseIf Me.SelHora.Value = "Fora Hor. Com." Then
+    ' Para Fora Hor. Com., somente ValorMo deve ser 0
+    ValorMo = 0
+    ValorFrete = ValorFr * Multiplicador ' Calcular normalmente
+Else
+     ' Verificar se Montneg está preenchido e é numérico
+    If Not IsEmpty(Me.Montneg.Value) And IsNumeric(Me.Montneg.Value) Then
+        Montneg = CDbl(Me.Montneg.Value) ' Armazenar o valor em Montneg
+        ValorMo = Montneg ' Usar Montneg para ValorMo
+    Else
+         ValorMontagem = ValorPr * 0.035 + Estadia * 3.5
+    ValorMo = ValorMontagem * Multiplicador
+    End If
+
+    ValorFrete = ValorFr * Multiplicador ' Calcular ValorFrete normalmente
+End If
+
+    
+
+            BaseDifal1 = (ValorPr + ValorFrete + ValorMo) / (1 - PcDifal - TaxaPobreza)
+            BaseDifal2 = 1 - (IPI * (1 - PcDifal - TaxaPobreza)) / (1 + IPI)
+            
+            ' Verificar se BaseDifal2 é zero para evitar divisão por zero
+            If BaseDifal2 = 0 Then
+                MsgBox "Erro: BaseDifal2 é zero, o que causa uma divisão por zero.", vbExclamation
+                Exit Sub
+            End If
+            
+            BaseDifal = BaseDifal1 / BaseDifal2
+
+            ' Calcular GuiaDifal e GuiaFCP
+            GuiaDifal = BaseDifal * PcDifal
+            GuiaFCP = BaseDifal * TaxaPobreza
+            
+            ' Verifique se BaseDifal e ValorMo não causam problemas de divisão
+            If (PcDifal + TaxaPobreza) = 0 Then
+                MsgBox "Erro: Divisor é zero para o cálculo do ValorDifal.", vbExclamation
+                Exit Sub
+            End If
+
+            ValorIPI = BaseDifal * IPI / (1 + IPI)
+            ValorDifal = ((BaseDifal - ValorFrete - ValorPr - ValorMo - (BaseDifal * IPI / (1 + IPI))) * PcDifal) / (PcDifal + TaxaPobreza)
+            ValorTx = BaseDifal - ValorFrete - ValorPr - ValorMo - ValorDifal - (BaseDifal * IPI / (1 + IPI))
+            DespAc = BaseDifal - ValorPr - ValorFrete - ValorIPI
+            ValorNF = ValorPr + ValorFrete + ValorIPI + DespAc
+            
+        End If
+        
+    Else
+        ValorDifal = 0
+        ValorTx = 0
+        
+        ' Calcular imposto de frete
+        IPIFrete = 500000 * IPI / (1 + IPI)
+        ICMSFrete = 500000 * ICMSFrete
+        PISCOFINSFrete = (500000 - IPIFrete - ICMSFrete) * 0.0365
+        IRPJFrete = 0.08 * (500000 - IPIFrete) * 0.25
+        CSLLFrete = 0.12 * (500000 - IPIFrete) * 0.09
+
+        TImpFrete = IPIFrete + PISCOFINSFrete + IRPJFrete + CSLLFrete + ICMSFrete
+        FreteLiq = 500000 - TImpFrete
+        
+        ' Verificar se FreteLiq é zero para evitar divisão por zero
+        If FreteLiq = 0 Then
+            MsgBox "Erro: Frete líquido é zero, o que causa uma divisão por zero.", vbExclamation
+            Exit Sub
+        End If
+        
+        Multiplicador = 500000 / FreteLiq
+
+     
+
+        ' Inicializar ValorMontagem
+        ValorMontagem = 0
+
+     
+                 ' Calcular o valor da montagem
+            If Me.SelUF.Value = "São Paulo" And Me.SelCid.Value = "Capital" And Me.SelHora.Value = "Comercial" Then
+                ' Não considerar a Estadia para São Paulo - Capital
+                ValorMo = 0
+                 ValorFrete = 0
+         ElseIf Me.SelHora.Value = "Fora Hor. Com." Then
+    ' Para Fora Hor. Com., somente ValorMo deve ser 0
+    ValorMo = 0
+    ValorFrete = ValorFr * Multiplicador ' Calcular normalmente
+Else
+    ' Considerar a Estadia para São Paulo - Interior e outros estados
+       ' Verificar se Montneg está preenchido e é numérico
+    If Not IsEmpty(Me.Montneg.Value) And IsNumeric(Me.Montneg.Value) Then
+        Montneg = CDbl(Me.Montneg.Value) ' Armazenar o valor em Montneg
+        ValorMo = Montneg ' Usar Montneg para ValorMo
+    Else
+         ValorMontagem = ValorPr * 0.035 + Estadia * 3.5
+    ValorMo = ValorMontagem * Multiplicador
+    End If
+
+    ValorFrete = ValorFr * Multiplicador ' Calcular ValorFrete normalmente
+End If
+
+        BaseDifal1 = (ValorPr + ValorFrete + ValorMo) / 1
+        BaseDifal2 = 1 - IPI / (1 + IPI)
+        
+        ' Verificar se BaseDifal2 é zero para evitar divisão por zero
+        If BaseDifal2 = 0 Then
+            MsgBox "Erro: BaseDifal2 é zero, o que causa uma divisão por zero.", vbExclamation
+            Exit Sub
+        End If
+        
+        BaseDifal = BaseDifal1 / BaseDifal2
+        ValorDifal = 0
+        ValorTx = 0
+
+        ' Calcular o valor do IPI
+        ValorIPI = BaseDifal * IPI / (1 + IPI)
+        DespAc = ValorMo
+
+        ' Calcular o valor da nota fiscal
+        ValorNF = ValorPr + ValorFrete + ValorIPI + ValorMo
+    End If
+
+    ' Exibir os resultados em TextBoxes
+    Me.ValorFrete.Value = Format(ValorFrete, "R$ #,##0.00")
+    Me.ValorMo.Value = Format(ValorMo, "R$ #,##0.00")
+    Me.ValorIPI.Value = Format(ValorIPI, "R$ #,##0.00")
+    Me.ValorDifal.Value = Format(ValorDifal, "R$ #,##0.00")
+    Me.ValorTx.Value = Format(ValorTx, "R$ #,##0.00")
+    Me.DespAc.Value = Format(DespAc, "R$ #,##0.00")
+    Me.ValorNF.Value = Format(ValorNF, "R$ #,##0.00")
+    Me.GuiaDifal.Value = Format(GuiaDifal, "R$ #,##0.00")
+    Me.GuiaFCP.Value = Format(GuiaFCP, "R$ #,##0.00")
+End Sub
+
+
+Private Sub Calcularsem_Click()
+
+    Dim ValorPr As Double
+    Dim ValorFr As Double
+    Dim ValorMo As Double
+    Dim ValorIPI As Double
+    Dim IPI As Double
+    Dim Estadia As Double
+    Dim ValorDifal As Double
+    Dim ValorTx As Double
+    Dim DifalPc As Double
+    Dim TaxaPobreza As Double
+    Dim BaseDifal1 As Double
+    Dim BaseDifal2 As Double
+    Dim BaseDifal As Double
+    Dim GuiaDifal As Double
+    Dim GuiaFCP As Double
+    Dim PcDifal As Double
+    Dim DespAc As Double
+    Dim Multiplicador As Double
+    Dim FreteLiq As Double
+    Dim TImpFrete As Double
+    Dim DifalFrete As Double
+    Dim IPIFrete As Double
+    Dim FCPFrete As Double
+    Dim PISCOFINSFrete As Double
+    Dim IRPJFrete As Double
+    Dim CSLLFrete As Double
+    Dim ICMSFrete As Double
+    Dim ValorMontagem As Double
+    Dim ValorFrete As Double
+    Dim FreteNeg As Double
+
+    ' Verificar se o ValorPr é numérico
+    If Not IsNumeric(Me.ValorPr.Value) Then
+        MsgBox "Por favor, insira o valor dos produtos.", vbExclamation
+        Exit Sub
+    End If
+    ValorPr = CDbl(Me.ValorPr.Value)
+
+
+ 
+
+    ' Verificar qual valor de frete será utilizado
+If Not IsEmpty(Me.FreteNeg.Value) And IsNumeric(Me.FreteNeg.Value) Then
+    ValorFr = CDbl(Me.FreteNeg.Value)
+    
+ElseIf Me.Check1.Value = True Then
+    ValorFr = CDbl(Me.Transp1cot.Value)
+    
+ElseIf Me.Check2.Value = True Then
+    ValorFr = CDbl(Me.Transp2cot.Value)
+    
+ElseIf Me.NFrete.Value = True Then
+    ValorFr = 0
+    ValorFrete = 0
+    
+Else
+    MsgBox "Por favor, selecione uma opção de frete.", vbExclamation
+    Exit Sub
+End If
+
+    ' Inicializar a taxa de IPI
+    IPI = 0.0325 ' Taxa de IPI de 3.25%
+
+    ' Inicializar variáveis de DIFAL
+    If Me.SemInscricao.Value = True Then
+        If Me.SelUF.Value = "São Paulo" Then
+            ' Não calcular DIFAL para São Paulo
+            ValorDifal = 0
+            ValorTx = 0
+            
+            ' Calcular imposto de frete
+            IPIFrete = 500000 * IPI / (1 + IPI)
+            ICMSFrete = 500000 * ICMSFrete
+            PISCOFINSFrete = (500000 - IPIFrete - ICMSFrete) * 0.0365
+            IRPJFrete = 0.08 * (500000 - IPIFrete) * 0.25
+            CSLLFrete = 0.12 * (500000 - IPIFrete) * 0.09
+
+            TImpFrete = IPIFrete + PISCOFINSFrete + IRPJFrete + CSLLFrete + ICMSFrete
+            FreteLiq = 500000 - TImpFrete
+            
+            ' Verificar se FreteLiq é zero para evitar divisão por zero
+            If FreteLiq = 0 Then
+                MsgBox "Erro: Frete líquido é zero, o que causa uma divisão por zero.", vbExclamation
+                Exit Sub
+            End If
+            
+            Multiplicador = 500000 / FreteLiq
+
+          
+                     ' Calcular o valor da montagem
+            If Me.SelUF.Value = "São Paulo" And Me.SelCid.Value = "Capital" And Me.SelHora.Value = "Comercial" Then
+                ' Não considerar a Estadia para São Paulo - Capital
+                ValorMo = 0
+                 ValorFrete = 0
+         ElseIf Me.SelHora.Value = "Fora Hor. Com." Then
+    ' Para Fora Hor. Com., somente ValorMo deve ser 0
+    ValorMo = 0
+    ValorFrete = ValorFr * Multiplicador ' Calcular normalmente
+Else
+    ' Considerar a Estadia para São Paulo - Interior e outros estados
+  
+    ValorMo = 0
+    ValorFrete = ValorFr * Multiplicador
+End If
+         
+
+            BaseDifal1 = (ValorPr + ValorFrete + ValorMo) / 1
+            BaseDifal2 = 1 - IPI / (1 + IPI)
+            
+            ' Verificar se BaseDifal2 é zero para evitar divisão por zero
+            If BaseDifal2 = 0 Then
+                MsgBox "Erro: BaseDifal2 é zero, o que causa uma divisão por zero.", vbExclamation
+                Exit Sub
+            End If
+            
+            BaseDifal = BaseDifal1 / BaseDifal2
+            ValorDifal = 0
+            ValorTx = 0
+
+            ' Calcular o valor do IPI
+            ValorIPI = BaseDifal * IPI / (1 + IPI)
+
+            ' Calcular o valor da nota fiscal
+            Dim ValorNF As Double
+            ValorNF = ValorPr + ValorFrete + ValorIPI + ValorMo
+            DespAc = 0
+            
+        Else
+            Dim wsDifal As Worksheet
+            Set wsDifal = ThisWorkbook.Sheets("Difal_FCP")
+
+            On Error Resume Next
+            PcDifal = Application.WorksheetFunction.VLookup(Me.SelUF.Value, wsDifal.Range("A:B"), 2, False)
+            TaxaPobreza = Application.WorksheetFunction.VLookup(Me.SelUF.Value, wsDifal.Range("A:C"), 3, False)
+            ICMSFrete = Application.WorksheetFunction.VLookup(Me.SelUF.Value, wsDifal.Range("A:D"), 4, False)
+            On Error GoTo 0
+
+            If IsError(PcDifal) Or IsError(TaxaPobreza) Or IsError(ICMSFrete) Then
+                MsgBox "Erro ao encontrar dados para o estado selecionado.", vbExclamation
+                Exit Sub
+            End If
+
+            ' Calcular imposto de frete
+            DifalFrete = 500000 * PcDifal
+            IPIFrete = 500000 * IPI / (1 + IPI)
+            ICMSFrete = 500000 * ICMSFrete
+            FCPFrete = 500000 * TaxaPobreza
+            PISCOFINSFrete = (500000 - IPIFrete - ICMSFrete) * 0.0365
+            IRPJFrete = 0.08 * (500000 - IPIFrete) * 0.25
+            CSLLFrete = 0.12 * (500000 - IPIFrete) * 0.09
+
+            TImpFrete = DifalFrete + IPIFrete + FCPFrete + PISCOFINSFrete + IRPJFrete + CSLLFrete + ICMSFrete
+            FreteLiq = 500000 - TImpFrete
+            
+            ' Verificar se FreteLiq é zero para evitar divisão por zero
+            If FreteLiq = 0 Then
+                MsgBox "Erro: Frete líquido é zero, o que causa uma divisão por zero.", vbExclamation
+                Exit Sub
+            End If
+            
+            Multiplicador = 500000 / FreteLiq
+            ' Calcular o valor da montagem
+            If Me.SelUF.Value = "São Paulo" And Me.SelCid.Value = "Capital" And Me.SelHora.Value = "Comercial" Then
+                ' Não considerar a Estadia para São Paulo - Capital
+                ValorMo = 0
+                 ValorFrete = 0
+         ElseIf Me.SelHora.Value = "Fora Hor. Com." Then
+    ' Para Fora Hor. Com., somente ValorMo deve ser 0
+    ValorMo = 0
+    ValorFrete = ValorFr * Multiplicador ' Calcular normalmente
+Else
+    ' Considerar a Estadia para São Paulo - Interior e outros estados
+       ValorMo = 0
+    ValorFrete = ValorFr * Multiplicador
+End If
+
+            BaseDifal1 = (ValorPr + ValorFrete + ValorMo) / (1 - PcDifal - TaxaPobreza)
+            BaseDifal2 = 1 - (IPI * (1 - PcDifal - TaxaPobreza)) / (1 + IPI)
+            
+            ' Verificar se BaseDifal2 é zero para evitar divisão por zero
+            If BaseDifal2 = 0 Then
+                MsgBox "Erro: BaseDifal2 é zero, o que causa uma divisão por zero.", vbExclamation
+                Exit Sub
+            End If
+            
+            BaseDifal = BaseDifal1 / BaseDifal2
+
+            ' Calcular GuiaDifal e GuiaFCP
+            GuiaDifal = BaseDifal * PcDifal
+            GuiaFCP = BaseDifal * TaxaPobreza
+            
+            ' Verifique se BaseDifal e ValorMo não causam problemas de divisão
+            If (PcDifal + TaxaPobreza) = 0 Then
+                MsgBox "Erro: Divisor é zero para o cálculo do ValorDifal.", vbExclamation
+                Exit Sub
+            End If
+              ValorIPI = BaseDifal * IPI / (1 + IPI)
+            ValorDifal = ((BaseDifal - ValorFrete - ValorPr - (BaseDifal * IPI / (1 + IPI))) * PcDifal) / (PcDifal + TaxaPobreza)
+            ValorTx = BaseDifal - ValorFrete - ValorPr - ValorDifal - (BaseDifal * IPI / (1 + IPI))
+            DespAc = BaseDifal - ValorPr - ValorFrete - ValorIPI
+            ValorNF = ValorPr + ValorFrete + ValorIPI + DespAc
+            
+        End If
+        
+    Else
+        ValorDifal = 0
+        ValorTx = 0
+        
+        ' Calcular imposto de frete
+        IPIFrete = 500000 * IPI / (1 + IPI)
+        ICMSFrete = 500000 * ICMSFrete
+        PISCOFINSFrete = (500000 - IPIFrete - ICMSFrete) * 0.0365
+        IRPJFrete = 0.08 * (500000 - IPIFrete) * 0.25
+        CSLLFrete = 0.12 * (500000 - IPIFrete) * 0.09
+
+        TImpFrete = IPIFrete + PISCOFINSFrete + IRPJFrete + CSLLFrete + ICMSFrete
+        FreteLiq = 500000 - TImpFrete
+        
+        ' Verificar se FreteLiq é zero para evitar divisão por zero
+        If FreteLiq = 0 Then
+            MsgBox "Erro: Frete líquido é zero, o que causa uma divisão por zero.", vbExclamation
+            Exit Sub
+        End If
+        
+        Multiplicador = 500000 / FreteLiq
+
+                   ' Calcular o valor da montagem
+            If Me.SelUF.Value = "São Paulo" And Me.SelCid.Value = "Capital" And Me.SelHora.Value = "Comercial" Then
+                ' Não considerar a Estadia para São Paulo - Capital
+                ValorMo = 0
+                 ValorFrete = 0
+         ElseIf Me.SelHora.Value = "Fora Hor. Com." Then
+    ' Para Fora Hor. Com., somente ValorMo deve ser 0
+    ValorMo = 0
+    ValorFrete = ValorFr * Multiplicador ' Calcular normalmente
+Else
+    ' Considerar a Estadia para São Paulo - Interior e outros estados
+    
+    ValorMo = 0
+    ValorFrete = ValorFr * Multiplicador
+End If
+
+        BaseDifal1 = (ValorPr + ValorFrete + ValorMo) / 1
+        BaseDifal2 = 1 - IPI / (1 + IPI)
+        
+        ' Verificar se BaseDifal2 é zero para evitar divisão por zero
+        If BaseDifal2 = 0 Then
+            MsgBox "Erro: BaseDifal2 é zero, o que causa uma divisão por zero.", vbExclamation
+            Exit Sub
+        End If
+        
+        BaseDifal = BaseDifal1 / BaseDifal2
+        ValorDifal = 0
+        ValorTx = 0
+
+        ' Calcular o valor do IPI
+        ValorIPI = BaseDifal * IPI / (1 + IPI)
+        DespAc = 0
+        ' Calcular o valor da nota fiscal
+      
+        ValorNF = ValorPr + ValorFrete + ValorIPI
+    End If
+
+    ' Exibir os resultados em TextBoxes
+    Me.ValorFrete.Value = Format(ValorFrete, "R$ #,##0.00")
+    Me.ValorMo.Value = Format(ValorMo, "R$ #,##0.00")
+    Me.ValorIPI.Value = Format(ValorIPI, "R$ #,##0.00")
+    Me.ValorDifal.Value = Format(ValorDifal, "R$ #,##0.00")
+    Me.ValorTx.Value = Format(ValorTx, "R$ #,##0.00")
+    Me.DespAc.Value = Format(DespAc, "R$ #,##0.00")
+    Me.ValorNF.Value = Format(ValorNF, "R$ #,##0.00")
+    Me.GuiaDifal.Value = Format(GuiaDifal, "R$ #,##0.00")
+    Me.GuiaFCP.Value = Format(GuiaFCP, "R$ #,##0.00")
+
+End Sub
+
+
+
+
+Private Sub ComInscricao_Click()
+    ' Desmarcar outros CheckBoxes se ComInscricao for marcado
+    If ComInscricao.Value Then
+  
+        SemInscricao.Value = False
+    End If
+End Sub
+
+Private Sub SemInscricao_Click()
+    ' Desmarcar outros CheckBoxes se SemInscricao for marcado
+    If SemInscricao.Value Then
+     
+        ComInscricao.Value = False
+    End If
+End Sub
+
+Private Sub Check1_Click()
+    ' Desmarcar outros CheckBoxes se ComInscricao for marcado
+    If Check1.Value Then
+  
+        Check2.Value = False
+        
+        NFrete.Value = False
+    End If
+End Sub
+
+Private Sub Check2_Click()
+    ' Desmarcar outros CheckBoxes se SemInscricao for marcado
+    If Check2.Value Then
+     
+        Check1.Value = False
+         NFrete.Value = False
+         
+    End If
+End Sub
+
+Private Sub NFrete_Click()
+    ' Desmarcar outros CheckBoxes se SemInscricao for marcado
+    If NFrete.Value Then
+     
+        Check1.Value = False
+         Check2.Value = False
+         
+    End If
+End Sub
+
+
+Private Sub Cotar_Click()
+    Dim ValorFr As Single
+    Dim ValorMontagem As Single
+    Dim ValorMo As Single
+    Dim ImpMo As Single
+    Dim ValorIPI As Single
+    Dim estado As String
+    Dim cidade As String
+    Dim horario As String
+    Dim transportadora1 As Variant
+    Dim transportadora2 As Variant
+    Dim percentual1 As Single
+    Dim percentual2 As Single
+    Dim prazo1 As String ' Manter como String
+    Dim prazo2 As String ' Manter como String
+    Dim ValorPr As Single
+    Dim Transp1cot As Single
+    Dim Transp2cot As Single
+    Dim Transp1prazo As String ' Manter como String
+    Dim Transp2prazo As String ' Manter como String
+    Dim ws As Worksheet
+    Dim i As Long
+    Dim lastRow As Long
+    Dim found As Boolean
+    Dim minValue As Single
+    Dim minCotacao As Single
+    
+    ' Defina a planilha
+    Set ws = ThisWorkbook.Sheets("Cotação Transportadoras")
+    
+    ' Obtenha os valores das ComboBoxes
+    estado = Me.SelUF.Value
+    cidade = Me.SelCid.Value
+    horario = Me.SelHora.Value
+    
+    ' Inicializa os percentuais e prazos
+    percentual1 = 0
+    percentual2 = 0
+    prazo1 = ""
+    prazo2 = ""
+    
+    ' Definir o intervalo da busca
+    lastRow = ws.Cells(ws.Rows.Count, "B").End(xlUp).Row
+    found = False
+    
+    ' Procurar pela combinação de estado, cidade e horário
+    For i = 3 To lastRow
+        ' Verifica se o estado e o horário correspondem
+        If ws.Cells(i, 2).Value = estado And _
+           ws.Cells(i, 4).Value = horario Then
+           
+           ' Verifica se a cidade corresponde
+           If ws.Cells(i, 3).Value = cidade Then
+               ' Encontrou a linha que corresponde a todos os critérios
+               If IsNumeric(ws.Cells(i, 5).Value) Then
+                   percentual1 = CSng(ws.Cells(i, 5).Value) ' Converter para Single
+               End If
+               If IsNumeric(ws.Cells(i, 7).Value) Then
+                   percentual2 = CSng(ws.Cells(i, 7).Value) ' Converter para Single
+               End If
+               ' Tratar prazos como texto diretamente
+               prazo1 = CStr(ws.Cells(i, 6).Value)
+               prazo2 = CStr(ws.Cells(i, 10).Value)
+             
+               found = True
+               Exit For ' Sai do loop uma vez que a linha é encontrada
+           End If
+        End If
+    Next i
+    
+    ' Mensagem de depuração para verificar se encontrou o item
+    If Not found Then
+        MsgBox "Não foi possível encontrar a combinação de estado, cidade e horário.", vbExclamation
+        Exit Sub ' Sair do procedimento se não encontrar
+    End If
+    
+    ' Defina os valores das TextBoxes de percentuais e prazos
+    Me.Transp1pc.Value = Format(percentual1, "0")
+    Me.Transp2pc.Value = ""
+    Me.Transp1prazo.Value = prazo1
+    Me.Transp2prazo.Value = ""
+    
+    ' Verificar se ValorPr contém um valor válido
+    If IsNumeric(Me.ValorPr.Text) Then
+        ValorPr = CSng(Me.ValorPr.Text) ' Converter o valor da TextBox para Single
+    Else
+        MsgBox "Por favor, insira o valor dos produtos.", vbExclamation
+        Exit Sub ' Sair do procedimento se o valor não for válido
+    End If
+    
+    ' Inicializa o valor mínimo e cotação para Transp2cot
+    minValue = 0
+    minCotacao = 0
+    
+   ' Calcula o frete para São Paulo
+If estado = "São Paulo" Then
+    If cidade = "Capital" Then
+        If horario = "Comercial" Then
+            ' Frete de 3% para São Paulo, Capital, horário comercial
+            Transp1cot = ValorPr * 0.03
+        ElseIf horario = "Fora Hor. Com." Then
+            ' Frete de 4% para São Paulo, Capital, fora do horário comercial
+            If ValorPr < 15000 Then
+                Transp1cot = (ValorPr * 0.04) + 280
+            Else
+                Transp1cot = ValorPr * 0.04
+            End If
+        End If
+    Else
+        ' Caso São Paulo Interior
+        If ValorPr > 30000 Then
+            Transp1cot = ValorPr * (percentual1 / 100)
+        Else
+            Transp1cot = 30000 * (percentual1 / 100)
+        End If
+    End If
+
+    ' Cálculo para Transp2cot
+    Transp2cot = 0.035 * ValorPr
+    transportadora1 = ws.Range("E1").Value
+    transportadora2 = ""
+    Me.Transp2pc.Value = ""
+Else
+    ' Para outros estados
+    ' Encontrar o valor mínimo e a cotação correspondente para Transp2cot
+    For i = 3 To lastRow
+        If ws.Cells(i, 2).Value = estado Then
+            If IsNumeric(ws.Cells(i, 9).Value) And IsNumeric(ws.Cells(i, 8).Value) Then
+                If ValorPr < CSng(ws.Cells(i, 9).Value) Then
+                    minValue = CSng(ws.Cells(i, 9).Value)
+                    minCotacao = CSng(ws.Cells(i, 8).Value)
+                End If
+            End If
+        End If
+    Next i
+    
+   
+    
+    ' Calcula o valor para Transp1cot
+    If ValorPr > 30000 Then
+        Transp1cot = ValorPr * (percentual1 / 100)
+    Else
+        Transp1cot = 30000 * (percentual1 / 100)
+    End If
+    
+    transportadora1 = ws.Range("E1").Value
+    transportadora2 = ""
+End If
+
+    
+    ' Calcula o prazo de entrega
+    If estado = "São Paulo" Then
+        If cidade = "Capital" Then
+            If horario = "Comercial" Then
+                Transp1prazo = prazo1
+                Transp2prazo = "" ' Aqui você pode ajustar conforme necessário
+            ElseIf horario = "Fora Hor. Com." Then
+                Transp1prazo = prazo1
+                Transp2prazo = ""
+            End If
+               transportadora1 = ws.Range("E1").Value
+        transportadora2 = ""
+        Else
+            ' São Paulo Interior
+            Transp1prazo = prazo1
+            Transp2prazo = "" ' Aqui você pode ajustar conforme necessário
+        End If
+           transportadora1 = ws.Range("E1").Value
+        transportadora2 = ""
+    Else
+        ' Outros estados
+        Transp1prazo = prazo1
+        Transp2prazo = ""
+    End If
+       transportadora1 = ws.Range("E1").Value
+        transportadora2 = ""
+    
+    ' Verificar se o estado é São Paulo e o valor do pedido é menor que o pedido mínimo
+    If estado = "São Paulo" And ValorPr <= 15000 Then
+        ' Para São Paulo com valor abaixo do pedido mínimo, o frete é fixo
+        Me.Transp1pc.Value = "3"
+        Me.Transp2pc.Value = ""
+           transportadora1 = ws.Range("E1").Value
+        transportadora2 = ""
+    End If
+    
+    ' Defina o valor das TextBoxes
+    Me.Transp1.Value = transportadora1
+    Me.Transp2.Value = ""
+    
+    ' Defina os valores das TextBoxes de cálculo do frete e prazo
+    Me.Transp1cot.Value = Format(Transp1cot, "R$ #,##0.00")
+    Me.Transp2cot.Value = ""
+    Me.Transp1prazo.Value = Transp1prazo
+    Me.Transp2prazo.Value = ""
+    
+End Sub
+
+
+
+Private Sub data_AfterUpdate()
+    Dim dataValida As Boolean
+    
+    ' Verifica se a entrada é uma data válida
+    dataValida = IsDate(Me.data.Value)
+    
+    If Not dataValida Then
+        MsgBox "Por favor, insira uma data válida.", vbExclamation
+        Me.data.Value = "" ' Limpar o campo se a entrada não for válida
+        Me.data.SetFocus ' Colocar o foco de volta no campo
+    End If
+End Sub
+
+
+
+Private Sub UserForm_Initialize()
+    Dim ws As Worksheet
+    Dim rng As Range
+    Dim cell As Range
+    
+    ' Defina a planilha e o intervalo
+    Set ws = ThisWorkbook.Sheets("Cotação Transportadoras")
+    
+    ' Preencher ComboBox com valores de UF
+    Set rng = ws.Range("A3:A57")
+    With Me.SelUF
+        .Clear ' Limpar itens existentes no ComboBox
+        For Each cell In rng
+            If Not IsEmpty(cell.Value) Then
+                .AddItem cell.Value
+            End If
+        Next cell
+    End With
+
+    ' Preencher ComboBox com valores para cidade
+    With Me.SelCid
+        .Clear ' Limpar itens existentes no ComboBox
+        .AddItem "Capital"
+        .AddItem "Interior"
+    End With
+
+    ' Preencher ComboBox com valores para horário
+    With Me.SelHora
+        .Clear ' Limpar itens existentes no ComboBox
+        .AddItem "Comercial"
+        .AddItem "Fora Hor. Com."
+    End With
+    Me.ValorPr.Value = Format(ValorPr, "R$ #,##0.00")
+    
+
+
+    
+    Me.data.Locked = False
+    Me.NumOr.Locked = False
+    Me.ValorPr.Locked = False ' Permitir edição
+    Me.Estadia.Locked = False ' Permitir edição
+
+    Me.Transp1cot.Locked = True
+    Me.Transp2cot.Locked = True
+
+    Me.ValorMo.Locked = True
+    Me.ValorIPI.Locked = True
+    Me.ValorDifal.Locked = True
+    Me.ValorTx.Locked = True
+
+    Me.ValorNF.Locked = True
+    Me.Transp1.Locked = True
+    Me.Transp2.Locked = True
+    Me.Transp1pc.Locked = True
+    Me.Transp2pc.Locked = True
+End Sub
+Private Sub ValorDifal_AfterUpdate()
+    Dim ValorDifal As Single
+    
+    ' Verificar se o valor digitado é numérico
+    If IsNumeric(Me.ValorDifal.Value) Then
+        ValorDifal = CSng(Me.ValorDifal.Value)
+        
+        ' Verificar se o valor é maior ou igual a zero
+        If ValorDifal >= 0 Then
+            ' Habilitar o botão Calcular
+            Me.Calcular.Enabled = True
+        Else
+            ' Se o valor for negativo, desabilitar o botão Calcular
+            Me.Calcular.Enabled = False
+        End If
+    Else
+        ' Se o valor não for numérico, desabilitar o botão Calcular
+        Me.Calcular.Enabled = False
+    End If
+End Sub
+
+Private Sub SelUF_Change()
+    ' Verificar se o estado selecionado é o Distrito Federal
+    If Me.SelUF.Value = "DF - Difal 5%" Then
+        ' Exibir a mensagem
+        MsgBox "Consultar o comercial para verificar a alíquota do DIFAL!             Art. 46, Inciso II, alínea D, item 5: Que trata das alíquotas do imposto, seletivas em função da essencialidade das mercadorias, define a redução para móveis e mobiliário médico-cirúrgico classificados nas posições 4418, 9401, excetuadas as subposições 9401.10, 9401.20, 9402 e 9403 da NBM/SH.                                                                                     Portanto mercadorias classificadas nessas posições tem a alíquota de DIFAL de 5%.", vbExclamation
+      ElseIf Me.SelUF.Value = "DF - Difal 13%" Then
+        ' Exibir a mensagem
+        MsgBox "Consultar o comercial para verificar a alíquota do DIFAL!             Art. 46, Inciso II, alínea D, item 5: Que trata das alíquotas do imposto, seletivas em função da essencialidade das mercadorias, define a redução para móveis e mobiliário médico-cirúrgico classificados nas posições 4418, 9401, excetuadas as subposições 9401.10, 9401.20, 9402 e 9403 da NBM/SH.                                                                                     Portanto mercadorias classificadas nessas posições tem a alíquota de DIFAL de 5%.", vbExclamation
+        
+    ' Verificar se o estado selecionado é São Paulo
+    ElseIf Me.SelUF.Value = "São Paulo" And Me.SelCid.Value = "Capital" Then
+        ' Bloquear o campo Estadia
+        Me.Estadia.Locked = True
+      
+        
+        ' Outras ações relacionadas ao São Paulo, se houver
+        
+    Else
+        ' Se o estado não for Distrito Federal nem São Paulo
+        ' Bloquear o campo ValorDifal e reverter a cor
+        Me.ValorDifal.Locked = True
+   
+        
+    
+        
+        ' Desbloquear o campo Estadia e alterar a cor de fundo para padrão
+        Me.Estadia.Locked = False
+      
+    End If
+End Sub
+
+
+
+
+
+
+
+
+
+
+Private Sub Limpar_Click()
+    ' Limpar os valores das ComboBoxes (não remove itens)
+    Me.SelUF.Value = ""
+    Me.SelCid.Value = ""
+    Me.SelHora.Value = ""
+
+    ' Limpar os valores das TextBoxes
+    Me.data.Value = ""
+    Me.NumOr.Value = ""
+    Me.ValorPr.Value = ""
+    Me.ValorNF.Value = ""
+    Me.ValorFrete.Value = ""
+    Me.Transp1cot.Value = ""
+    Me.Transp2cot.Value = ""
+    Me.Estadia.Value = ""
+    Me.Montneg.Value = ""
+
+    Me.ValorMo.Value = ""
+    Me.ValorIPI.Value = ""
+    Me.ValorDifal.Value = ""
+    Me.ValorTx.Value = ""
+    Me.Transp1.Value = ""
+    Me.Transp2.Value = ""
+    Me.Transp1pc.Value = ""
+    Me.Transp2pc.Value = ""
+    Me.Transp1prazo.Value = ""
+    Me.Transp2prazo.Value = ""
+    Me.DespAc.Value = ""
+    Me.GuiaDifal.Value = ""
+    Me.GuiaFCP.Value = ""
+    ' Desmarcar CheckBoxes
+    Me.Check1.Value = False
+    Me.Check2.Value = False
+
+    ' Se necessário, você pode definir o foco para o primeiro campo ou um campo específico
+    Me.data.SetFocus
+End Sub
+
+
+
+Private Sub CommandButton1_Click()
+Me.Hide
+End Sub
+
+Private Sub Gravar_Click()
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim transportadoraNome As String
+    Dim transpcot As Double
+    Dim inscricaoStatus As String
+    Dim uf As String
+    Dim valorEstadia As Variant
+    Dim ValorMontagem As Double ' Declaração da variável ValorMontagem
+
+    ' Definir a planilha onde os dados serão gravados
+    Set ws = ThisWorkbook.Sheets("PEDIDOS") ' Substitua "PEDIDOS" pelo nome da sua planilha
+    
+    ' Encontrar a última linha vazia na planilha a partir da linha 6
+    lastRow = ws.Cells(ws.Rows.Count, 3).End(xlUp).Row
+    If lastRow < 6 Then
+        lastRow = 6
+    Else
+        lastRow = lastRow + 1
+    End If
+    
+    ' Verificar qual transportadora está marcada e definir o nome
+    If Me.Check1.Value = True Then
+        transportadoraNome = Me.Transp1.Value
+    ElseIf Me.Check2.Value = True Then
+        transportadoraNome = Me.Transp2.Value
+    Else
+       transportadoraNome = "Sem frete"
+    End If
+    
+    ' Definir a Cotação
+    If Me.Check1.Value = True Then
+        transpcot = Me.Transp1cot.Value
+    ElseIf Me.Check2.Value = True Then
+        transpcot = Me.Transp2cot.Value
+    End If
+    
+    ' Verificar qual checkbox de inscrição está selecionado
+    If Me.ComInscricao.Value = True Then
+        inscricaoStatus = "Com Inscrição"
+    ElseIf Me.SemInscricao.Value = True Then
+        inscricaoStatus = "Sem Inscrição"
+    Else
+        inscricaoStatus = "Não especificado"
+    End If
+    
+    ' Verificar a UF
+    uf = Me.SelUF.Value
+    
+    ' Definir o valor da estadia com base na UF
+    If uf = "São Paulo" Then
+        valorEstadia = 0 ' Ajuste se necessário, para definir como 0
+    Else
+        valorEstadia = Me.Estadia.Value
+    End If
+    
+    
+    
+    ' Gravar os dados do formulário na próxima linha disponível
+    ws.Cells(lastRow, 1).Value = Me.data.Value
+    ws.Cells(lastRow, 2).Value = Me.NumOr.Value
+    ws.Cells(lastRow, 3).Value = inscricaoStatus ' Grava o status de inscrição na coluna 3
+    ws.Cells(lastRow, 4).Value = Format(CSng(Me.ValorPr.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 5).Value = uf
+    ws.Cells(lastRow, 6).Value = Me.SelCid.Value
+    ws.Cells(lastRow, 7).Value = Me.SelHora.Value
+        ws.Cells(lastRow, 8).Value = Format(CSng(Me.ValorPr.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 9).Value = transportadoraNome ' Grava o nome da transportadora selecionada
+    ws.Cells(lastRow, 10).Value = Format(CSng(Me.ValorFrete.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 11).Value = valorEstadia ' Grava o valor da estadia com base na UF
+    ws.Cells(lastRow, 12).Value = Format(CSng(Me.ValorMo.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 13).Value = Format(CSng(Me.ValorIPI.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 14).Value = Format(CSng(Me.ValorDifal.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 15).Value = Format(CSng(Me.ValorTx.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 16).Value = Format(CSng(Me.DespAc.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 17).Value = Format(CSng(Me.ValorNF.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 21).Value = Format(CSng(Me.GuiaDifal.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 22).Value = Format(CSng(Me.GuiaFCP.Value), "R$ #,##0.00")
+    ws.Cells(lastRow, 23).Value = Format(transpcot, "R$ #,##0.00") ' Corrigido para usar transpcot diretamente
+      ' Verificar se Montneg está preenchido e é numérico
+If Not IsEmpty(Me.Montneg.Value) And IsNumeric(Me.Montneg.Value) Then
+    ' Gravar o valor formatado na célula se Montneg estiver preenchido
+    ws.Cells(lastRow, 25).Value = Format(CSng(Me.Montneg.Value), "R$ #,##0.00")
+End If
+    ' Gravar ValorMontagem somente se ValorMo > 0
+    If CSng(Me.ValorMo.Value) > 0 Then
+        ws.Cells(lastRow, 24).Value = Format(ValorMontagem, "R$ #,##0.00") ' Grava o ValorMontagem na coluna 23
+    Else
+        ws.Cells(lastRow, 24).Value = 0 ' Se não, grava 0
+    End If
+    
+    
+    
+    ' Confirmar gravação
+    MsgBox "Dados gravados com sucesso!", vbInformation
+End Sub
+
+
+
