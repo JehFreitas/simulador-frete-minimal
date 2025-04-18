@@ -82,3 +82,28 @@ Para informações sobre como contribuir, padrões de código, fluxo de trabalho
 
 *   `guia_desenvolvimento.md`
 *   `padroes_codigo_boas_praticas.md`
+
+
+```mermaid
+    graph TD
+        A[Iniciar: Necessidade/Ideia] --> C{Criar Issue GitHub};
+        C -- Sim --> D[Criar Issue Detalhada<br/>Usar Template, Definir ACs];
+        D --> E[Atribuir Issue ex: @me];
+        E --> F[Criar Branch Específica<br/>ex: feature/..., fix/... a partir de main];
+        F --> G[Implementar Código<br/>Seguir Padrões de 'padroes_codigo_boas_praticas.md'];
+        G --> I{Commit Atômico<br/>Mensagem Padronizada, Refs #ID? Recom.};
+        I --> H{Mais trabalho<br/>nesta Issue?};
+        H -- Sim --> G;
+        H -- Não --> J[Push Branch para GitHub];
+        J --> K[Criar Pull Request PR<br/>Vincular Issue: Closes #ID];
+        K --> L[Auto-Revisão do PR];
+        L --> M[Opcional Aguardar CI Checks<br/>Testes, Linting, etc.];
+        M --> N{PR Pronto e Revisado?};
+        N -- Sim --> O[Merge PR no Branch Principal<br/>Squash/Rebase Recomendado];
+        N -- Não/Feedback --> G;
+        O --> P[Excluir Branch<br/>Local/Remoto];
+        P --> Q([Fim: Código Integrado]);
+
+        class A,Q startend;
+        class C,H,N decision;
+```
