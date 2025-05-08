@@ -328,5 +328,4 @@ if submit:
         data=buffer,
         file_name=f"simulacao_frete_{cliente.replace(' ', '_')}.pdf",
         mime="application/pdf"
-    )    st.write(f"Guia Difal: {formatar(guia_difal)}")
-    st.write(f"Guia FCP: {formatar(guia_fcp)}")
+    )
