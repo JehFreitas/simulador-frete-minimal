@@ -117,6 +117,9 @@ def formatar(valor):
 
 # Formulário Streamlit
 with st.form("formulario"):
+    data = st.date_input("Data")
+    cliente = st.text_input("Cliente")
+    orcamento = st.text_input("Orçamento")
     valor_produtos = st.number_input("Valor dos produtos (com ICMS embutido)", min_value=0.0, format="%.2f")
     estado = st.selectbox("Estado de destino (UF)", list(TABELA_DIFAL.keys()))
     cidade = st.selectbox("Cidade de destino", ["Capital", "Interior"])
