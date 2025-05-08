@@ -183,6 +183,7 @@ if submit:
 
         difal_embutido = ((base_difal - Decimal(valor_produtos) - frete_final - montagem_final - valor_ipi) * DIFAL) / (DIFAL + FCP) if (DIFAL + FCP) != 0 else Decimal(0)
         fcp_embutido = base_difal - Decimal(valor_produtos) - frete_final - montagem_final - difal_embutido - valor_ipi
+        despesas_acessorias = base_difal - Decimal(valor_produtos) - frete_final - valor_ipi
     else:
         base_difal1 = (Decimal(valor_produtos) + frete_final + montagem_final) / 1
         base_difal2 = 1 - IPI * (1 + IPI)
@@ -194,8 +195,8 @@ if submit:
 
         difal_embutido = Decimal(0)
         fcp_embutido = Decimal(0)
+        despesas_acessorias = montagem_final
 
-    despesas_acessorias = montagem_final if guia_difal == 0 and guia_fcp == 0 else base_difal - Decimal(valor_produtos) - frete_final - valor_ipi
     valor_nf = Decimal(valor_produtos) + frete_final + valor_ipi + despesas_acessorias
 
     # Resultados finais
