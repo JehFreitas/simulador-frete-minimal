@@ -9,7 +9,7 @@ import streamlit as st
 from decimal import Decimal, getcontext
 
 getcontext().prec = 10
-st.set_page_config(page_title="Simulador - Minimal", layout="wide")
+st.set_page_config(page_title="Calculadora Comercial - Minimal", layout="wide")
 
 # Personalização visual com logo e estilo da Minimal
 st.markdown("""
@@ -67,7 +67,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.image("logo_minimal.png", width=140)
-st.title("Simulador - Minimal Design")
+st.title("Calculadora Comercial - Minimal Design")
 
 # Tabelas fixas
 TABELA_SALIS = {
@@ -295,7 +295,7 @@ if submit:
     c.drawImage("logo_minimal.png", 40, 805, width=70, preserveAspectRatio=True, mask='auto')
     c.setFont("Helvetica-Bold", 14)
     c.setFillColorRGB(0.333, 0.525, 0.6)  # Azul do logo
-    c.drawString(150, 830, "Orçamento - Minimal Design")
+    c.drawString(150, 830, "Calculadora Comercial - Minimal Design")
     c.setFillColorRGB(0, 0, 0)
     c.setFont("Helvetica", 10)
 
