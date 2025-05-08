@@ -4,8 +4,32 @@ import streamlit as st
 from decimal import Decimal, getcontext
 
 getcontext().prec = 10
-st.set_page_config(page_title="Calculadora de Frete - Minimal", layout="wide")
-st.title("Calculadora de Frete - Minimal Design")
+st.set_page_config(page_title="Simulador - Minimal", layout="wide")
+
+# Personalização visual com logo e estilo da Minimal
+st.markdown("""
+    <style>
+    body {
+        background-color: #f6f8fa;
+    }
+    .block-container {
+        padding-top: 2rem;
+    }
+    h1, h2, h3, h4 {
+        color: #000000;
+        font-family: 'Helvetica Neue', sans-serif;
+    }
+    .css-18e3th9 {
+        padding: 1rem;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+st.image("logo_minimal.png", width=140)
+st.title("Simulador - Minimal Design")
 
 # Tabelas fixas
 TABELA_SALIS = {
