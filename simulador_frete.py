@@ -1,5 +1,10 @@
 # simulador_frete.py
 
+import io
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm
+
 import streamlit as st
 from decimal import Decimal, getcontext
 
