@@ -292,45 +292,109 @@ if submit:
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     # Inserir logo e título estilizado
-    c.drawImage("logo_minimal.png", 40, 780, width=80, preserveAspectRatio=True, mask='auto')
+    c.drawImage("logo_minimal.png", 40, 785, width=80, preserveAspectRatio=True, mask='auto')
     c.setFont("Helvetica-Bold", 14)
     c.setFillColorRGB(0.333, 0.525, 0.6)  # Azul do logo
-    c.drawString(130, 795, "Simulação de Frete - Minimal Design")
+    c.drawString(140, 810, "Orçamento - Minimal Design")
     c.setFillColorRGB(0, 0, 0)
     c.setFont("Helvetica", 10)
 
     linha = 800
-    c.drawString(40, linha, f"Data: {data}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Data: {data}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Cliente: {cliente}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Cliente: {cliente}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Orçamento: {orcamento}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Orçamento: {orcamento}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 30
-    c.drawString(40, linha, f"Valor dos produtos: {formatar(Decimal(valor_produtos))}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Valor dos produtos: {formatar(Decimal(valor_produtos))}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Estado destino: {estado} - {cidade} ({horario})")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Estado destino: {estado} - {cidade} ({horario})")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Inscrição estadual: {tem_ie}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Inscrição estadual: {tem_ie}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Frete: {formatar(frete_final)}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Frete: {formatar(frete_final)}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Montagem: {formatar(montagem_final)}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Montagem: {formatar(montagem_final)}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Multiplicador: {multiplicador:.5f}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Multiplicador: {multiplicador:.5f}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Difal embutido: {formatar(difal_embutido)}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Difal embutido: {formatar(difal_embutido)}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"FCP embutido: {formatar(fcp_embutido)}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "FCP embutido: {formatar(fcp_embutido)}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Despesas acessórias: {formatar(despesas_acessorias)}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Despesas acessórias: {formatar(despesas_acessorias)}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Valor do IPI: {formatar(valor_ipi)}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Valor do IPI: {formatar(valor_ipi)}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Valor da NF: {formatar(valor_nf)}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Valor da NF: {formatar(valor_nf)}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Guia Difal: {formatar(guia_difal)}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Guia Difal: {formatar(guia_difal)}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
     linha -= 15
-    c.drawString(40, linha, f"Guia FCP: {formatar(guia_fcp)}")
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Guia FCP: {formatar(guia_fcp)}")
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
 
     c.showPage()
     c.save()
@@ -342,3 +406,5 @@ if submit:
         file_name=f"simulacao_frete_{cliente.replace(' ', '_')}.pdf",
         mime="application/pdf"
     )
+
+   
