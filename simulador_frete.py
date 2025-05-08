@@ -229,9 +229,7 @@ if submit:
         frete_final = frete_base * multiplicador
         montagem_final = montagem_base * multiplicador
 
-    st.success(f"Multiplicador: {multiplicador:.5f}")
-    st.success(f"Valor do Frete final: {formatar(frete_final)}")
-    st.success(f"Valor da Montagem final: {formatar(montagem_final)}")
+ 
 
     # 4. Cálculo de DIFAL/FCP/IPI/Nota Fiscal
     if tem_ie == "Não":
