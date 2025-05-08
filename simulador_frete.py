@@ -289,7 +289,7 @@ if submit:
  # Geração de PDF
     import io
 
-    buffer = io.BytesIO()
+   buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     # Inserir logo e título estilizado
     c.drawImage("logo_minimal.png", 40, 805, width=70, preserveAspectRatio=True, mask='auto')
@@ -306,7 +306,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Data: ")
+    c.drawString(40, linha, f"Data: {data}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -320,7 +320,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Cliente: ")
+    c.drawString(40, linha, f"Cliente: {cliente}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -334,7 +334,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Orçamento: ")
+    c.drawString(40, linha, f"Orçamento: {orcamento}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -348,7 +348,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Valor dos produtos: ")
+    c.drawString(40, linha, f"Valor dos produtos: {formatar(Decimal(valor_produtos))}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -362,7 +362,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Estado destino: ")
+    c.drawString(40, linha, f"Estado destino: {estado} - {cidade} ({horario})")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -376,7 +376,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Frete: ")
+    c.drawString(40, linha, f"Frete: {formatar(frete_final)}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -390,7 +390,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Montagem: ")
+    c.drawString(40, linha, f"Montagem: {formatar(montagem_final)}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -404,7 +404,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Multiplicador: ")
+    c.drawString(40, linha, f"Multiplicador: {multiplicador:.5f}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -418,7 +418,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Difal embutido: ")
+    c.drawString(40, linha, f"Difal embutido: {formatar(difal_embutido)}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -432,7 +432,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "FCP embutido: ")
+    c.drawString(40, linha, f"FCP embutido: {formatar(fcp_embutido)}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -446,7 +446,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Despesas acessórias: ")
+    c.drawString(40, linha, f"Despesas acessórias: {formatar(despesas_acessorias)}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -460,7 +460,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Valor do IPI: ")
+    c.drawString(40, linha, f"Valor do IPI: {formatar(valor_ipi)}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -474,7 +474,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Valor da NF: ")
+    c.drawString(40, linha, f"Valor da NF: {formatar(valor_nf)}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -488,7 +488,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Guia Difal: ")
+    c.drawString(40, linha, f"Guia Difal: {formatar(guia_difal)}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -502,7 +502,7 @@ if submit:
     c.setFillColorRGB(0.333, 0.525, 0.6)
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Guia FCP: ")
+    c.drawString(40, linha, f"Guia FCP: {formatar(guia_fcp)}")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
@@ -520,5 +520,6 @@ if submit:
         file_name=f"simulacao_frete_{cliente.replace(' ', '_')}.pdf",
         mime="application/pdf"
     )
+
 
    
