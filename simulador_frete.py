@@ -291,6 +291,12 @@ if submit:
 
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
+    # Inserir logo e título estilizado
+    c.drawImage("logo_minimal.png", 40, 780, width=80, preserveAspectRatio=True, mask='auto')
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColorRGB(0.333, 0.525, 0.6)  # Azul do logo
+    c.drawString(130, 795, "Simulação de Frete - Minimal Design")
+    c.setFillColorRGB(0, 0, 0)
     c.setFont("Helvetica", 10)
 
     linha = 800
