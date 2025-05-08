@@ -195,7 +195,7 @@ if submit:
         difal_embutido = Decimal(0)
         fcp_embutido = Decimal(0)
 
-    despesas_acessorias = base_difal - Decimal(valor_produtos) - frete_final - valor_ipi
+    despesas_acessorias = montagem_final if guia_difal == 0 and guia_fcp == 0 else base_difal - Decimal(valor_produtos) - frete_final - valor_ipi
     valor_nf = Decimal(valor_produtos) + frete_final + valor_ipi + despesas_acessorias
 
     # Resultados finais
