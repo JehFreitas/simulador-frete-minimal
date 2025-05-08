@@ -289,7 +289,7 @@ if submit:
  # Geração de PDF
     import io
 
-   buffer = io.BytesIO()
+    buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     # Inserir logo e título estilizado
     c.drawImage("logo_minimal.png", 40, 805, width=70, preserveAspectRatio=True, mask='auto')
