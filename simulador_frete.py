@@ -40,7 +40,13 @@ st.markdown("""
         color: #ffffff !important;
     } 
         /* Personalização da borda dos campos de entrada e selects */
-    .stNumberInput > div > div > input,
+    .stNumberInput > div > div > input {
+        border: 1px solid #558699 !important;
+        border-radius: 6px !important;
+        height: 2.5rem !important;
+        line-height: 1.2rem !important;
+        padding: 0 0.75rem !important;
+    },
     .stSelectbox div[data-baseweb="select"] > div {
         border: 1px solid #558699 !important;
         border-radius: 6px !important;
