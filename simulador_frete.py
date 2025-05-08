@@ -25,7 +25,21 @@ st.markdown("""
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
-    </style>
+        /* Personalização dos botões de rádio */
+    [data-baseweb="radio"] > div {
+        background-color: #ffffff;
+        border-radius: 6px;
+        padding: 0.25rem 0.5rem;
+    }
+    [data-baseweb="radio"] label span {
+        color: #558699;
+        font-weight: 500;
+    }
+    [data-baseweb="radio"] input:checked + div {
+        background-color: #558699 !important;
+        color: #ffffff !important;
+    } 
+</style>
 """, unsafe_allow_html=True)
 
 st.image("logo_minimal.png", width=140)
