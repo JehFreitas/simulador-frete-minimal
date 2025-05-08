@@ -471,19 +471,14 @@ if submit:
     c.setFillColorRGB(0, 0, 0)
     linha -= 12
     
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Guia Difal:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 15
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Guia Difal: {formatar(guia_difal)}")
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(200, linha, f"{Guia Difal: }")
     
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
