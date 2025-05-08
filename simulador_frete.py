@@ -146,8 +146,8 @@ if submit:
 
     ipi_frete = BASE * IPI / (1 + IPI)
     icms_frete = BASE * ICMS
-    base_liquida = BASE - ipi_frete
-    pis_cofins = (base_liquida - icms_frete) * Decimal("0.0365")
+    base_liquida = BASE - ipi_frete - icms_frete
+    pis_cofins = base_liquida * Decimal("0.0365")
     irpj = base_liquida * Decimal("0.08") * Decimal("0.25")
     csll = base_liquida * Decimal("0.12") * Decimal("0.09")
 
