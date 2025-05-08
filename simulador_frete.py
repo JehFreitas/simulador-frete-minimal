@@ -148,7 +148,7 @@ if submit:
 
     # 1. Cálculo do Frete (Salis)
     frete_base = Decimal(0)
-    if frete_opcao == "Calcular Salis":
+    if frete_opcao == "Calcular":
         if estado == "São Paulo":
             if cidade == "Capital" and horario == "Comercial":
                 frete_base = Decimal(valor_produtos) * Decimal("0.03")
