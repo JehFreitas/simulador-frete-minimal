@@ -281,7 +281,9 @@ if submit:
     st.write(f"Guia Difal: {formatar(guia_difal)}")
     st.write(f"Guia FCP: {formatar(guia_fcp)}")
 
-# Geração de PDF
+ # Geração de PDF
+    import io
+
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     c.setFont("Helvetica", 10)
