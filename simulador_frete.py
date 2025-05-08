@@ -39,6 +39,17 @@ st.markdown("""
         background-color: #558699 !important;
         color: #ffffff !important;
     } 
+    /* Personalização da borda dos campos de entrada e selects */
+    input, select, textarea {
+        border-color: #558699 !important;
+        box-shadow: 0 0 0 1px #558699 !important;
+    }
+    .stSelectbox > div {
+        border-color: #558699 !important;
+    }
+    .stNumberInput input {
+        border-color: #558699 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
