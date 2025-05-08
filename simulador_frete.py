@@ -280,3 +280,53 @@ if submit:
     st.subheader("Guias")
     st.write(f"Guia Difal: {formatar(guia_difal)}")
     st.write(f"Guia FCP: {formatar(guia_fcp)}")
+
+# Geração de PDF
+    buffer = io.BytesIO()
+    c = canvas.Canvas(buffer, pagesize=A4)
+    c.setFont("Helvetica", 10)
+
+    linha = 800
+    c.drawString(40, linha, f"Data: {data}")
+    linha -= 15
+    c.drawString(40, linha, f"Cliente: {cliente}")
+    linha -= 15
+    c.drawString(40, linha, f"Orçamento: {orcamento}")
+    linha -= 30
+    c.drawString(40, linha, f"Valor dos produtos: {formatar(Decimal(valor_produtos))}")
+    linha -= 15
+    c.drawString(40, linha, f"Estado destino: {estado} - {cidade} ({horario})")
+    linha -= 15
+    c.drawString(40, linha, f"Inscrição estadual: {tem_ie}")
+    linha -= 15
+    c.drawString(40, linha, f"Frete: {formatar(frete_final)}")
+    linha -= 15
+    c.drawString(40, linha, f"Montagem: {formatar(montagem_final)}")
+    linha -= 15
+    c.drawString(40, linha, f"Multiplicador: {multiplicador:.5f}")
+    linha -= 15
+    c.drawString(40, linha, f"Difal embutido: {formatar(difal_embutido)}")
+    linha -= 15
+    c.drawString(40, linha, f"FCP embutido: {formatar(fcp_embutido)}")
+    linha -= 15
+    c.drawString(40, linha, f"Despesas acessórias: {formatar(despesas_acessorias)}")
+    linha -= 15
+    c.drawString(40, linha, f"Valor do IPI: {formatar(valor_ipi)}")
+    linha -= 15
+    c.drawString(40, linha, f"Valor da NF: {formatar(valor_nf)}")
+    linha -= 15
+    c.drawString(40, linha, f"Guia Difal: {formatar(guia_difal)}")
+    linha -= 15
+    c.drawString(40, linha, f"Guia FCP: {formatar(guia_fcp)}")
+
+    c.showPage()
+    c.save()
+    buffer.seek(0)
+
+    st.download_button(
+        label="📄 Baixar PDF do Resultado",
+        data=buffer,
+        file_name=f"simulacao_frete_{cliente.replace(' ', '_')}.pdf",
+        mime="application/pdf"
+    )    st.write(f"Guia Difal: {formatar(guia_difal)}")
+    st.write(f"Guia FCP: {formatar(guia_fcp)}")
