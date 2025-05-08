@@ -176,7 +176,7 @@ if submit:
     elif frete_opcao == "Não contratar":
         frete_base = Decimal(0)
 
-    st.success(f"Cotação do frete: {formatar(frete_base)}")
+
 
     # 2. Cálculo da Montagem
     montagem_base = Decimal(0)
@@ -192,7 +192,7 @@ if submit:
     elif montagem_opcao == "Não contratar":
         montagem_base = Decimal(0)
 
-    st.success(f"Cotação da montagem: {formatar(montagem_base)}")
+ 
 
     # 3. Cálculo do Multiplicador de Carga Tributária
     BASE = Decimal("500000")
