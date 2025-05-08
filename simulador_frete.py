@@ -103,17 +103,17 @@ with st.form("formulario"):
     cidade = st.selectbox("Cidade de destino", ["Capital", "Interior"])
     horario = st.radio("Horário da entrega", ["Comercial", "Fora do comercial"])
     tem_ie = st.radio("Cliente possui inscrição estadual?", ["Sim", "Não"])
-    frete_opcao = st.radio("Frete", ["Calcular Salis", "Informar valor negociado", "Não contratar"])
-    montagem_opcao = st.radio("Montagem", ["Calcular automaticamente", "Valor negociado", "Não contratar"])
+    frete_opcao = st.radio("Frete", ["Calcular", "Informar valor negociado", "Não contratar"])
+    montagem_opcao = st.radio("Montagem", ["Calcular", "Informar valor negociado", "Não contratar"])
 
     frete_negociado = 0
     montagem_negociada = 0
     km_ida_volta = 0
     if frete_opcao == "Informar valor negociado":
         frete_negociado = st.number_input("Valor negociado do frete", min_value=0.0, format="%.2f")
-    if montagem_opcao == "Valor negociado":
+    if montagem_opcao == "Informar valor negociado":
         montagem_negociada = st.number_input("Valor negociado da montagem", min_value=0.0, format="%.2f")
-    if montagem_opcao == "Calcular automaticamente" and estado != "São Paulo":
+    if montagem_opcao == "Calcular" and estado != "São Paulo":
         km_ida_volta = st.number_input("Distância ida e volta (km) de Barueri-SP", min_value=0.0, format="%.2f")
 
     submit = st.form_submit_button("Calcular")
@@ -161,14 +161,14 @@ if submit:
 
     # 2. Cálculo da Montagem
     montagem_base = Decimal(0)
-    if montagem_opcao == "Calcular automaticamente":
+    if montagem_opcao == "Calcular":
         if estado == "São Paulo" and cidade == "Capital":
             montagem_base = Decimal(valor_produtos) * Decimal("0.035")
         else:
             valor_base = Decimal(valor_produtos) * Decimal("0.035")
             custo_km = Decimal(km_ida_volta) * Decimal("3.50")
             montagem_base = valor_base + custo_km
-    elif montagem_opcao == "Valor negociado":
+    elif montagem_opcao == "Informar valor negociado":
         montagem_base = Decimal(montagem_negociada)
     elif montagem_opcao == "Não contratar":
         montagem_base = Decimal(0)
