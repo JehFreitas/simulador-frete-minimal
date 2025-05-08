@@ -161,7 +161,7 @@ if submit:
     frete_liquido = BASE - t_imp_frete
     if frete_liquido == 0:
         st.error("Erro: Frete líquido igual a zero. Divisão por zero não permitida.")
-   else:
+    else:
         multiplicador = BASE / frete_liquido
 
     frete_final = frete_base * multiplicador
