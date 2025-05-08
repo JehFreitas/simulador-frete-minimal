@@ -147,7 +147,7 @@ if submit:
     ipi_frete = BASE * IPI / (1 + IPI)
     icms_frete = BASE * ICMS
     base_liquida = BASE - ipi_frete
-    pis_cofins = base_liquida * Decimal("0.0365")
+    pis_cofins = (base_liquida - icms_frete) * Decimal("0.0365")
     irpj = base_liquida * Decimal("0.08") * Decimal("0.25")
     csll = base_liquida * Decimal("0.12") * Decimal("0.09")
 
@@ -161,8 +161,7 @@ if submit:
     frete_liquido = BASE - t_imp_frete
     if frete_liquido == 0:
         st.error("Erro: Frete líquido igual a zero. Divisão por zero não permitida.")
-        multiplicador = Decimal("1.0")
-    else:
+   else:
         multiplicador = BASE / frete_liquido
 
     frete_final = frete_base * multiplicador
