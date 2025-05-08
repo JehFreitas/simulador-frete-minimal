@@ -8,7 +8,7 @@ st.set_page_config(page_title="Simulador - Minimal", layout="wide")
 
 # Personalização visual com logo e estilo da Minimal
 st.markdown("""
-    <style>
+   <style>
     body {
         background-color: #f6f8fa;
     }
@@ -40,9 +40,11 @@ st.markdown("""
         color: #ffffff !important;
     } 
     /* Personalização da borda dos campos de entrada e selects */
-    input, select, textarea {
-        border-color: #558699 !important;
-        box-shadow: 0 0 0 1px #558699 !important;
+    .stNumberInput > div > div > input,
+    .stSelectbox div[data-baseweb="select"] > div {
+        border: 1px solid #558699 !important;
+        border-radius: 6px !important;
+        padding: 6px !important;
     }
     .stSelectbox > div {
         border-color: #558699 !important;
