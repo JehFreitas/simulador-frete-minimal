@@ -1,168 +1,219 @@
-# Simulador de Frete, Montagem e Tributos - Minimal (com Streamlit)
+# simulador_frete.py
 
 import streamlit as st
-from dataclasses import dataclass
-from typing import Optional
+from decimal import Decimal, getcontext
 
-# === Dados de entrada e saída ===
-@dataclass
-class Entrada:
-    valor_produtos: float
-    estado_destino: str
-    cidade: str
-    horario_entrega: str
-    inscricao_estadual: bool
-    tipo_frete: str
-    tipo_calculo_frete: str
-    valor_frete_negociado: Optional[float] = 0.0
-    tipo_calculo_montagem: str = "nao contratar"
-    valor_montagem_negociado: Optional[float] = 0.0
-    distancia_km: Optional[float] = 0.0
-    grande_sp: bool = True
+getcontext().prec = 10
+st.set_page_config(page_title="Calculadora de Frete - Minimal", layout="wide")
+st.title("Calculadora de Frete - Minimal Design")
 
-@dataclass
-class Resultado:
-    frete_final: float
-    montagem_final: float
-    multiplicador: float
-    guia_difal: float
-    guia_fcp: float
-    valor_ipi: float
-    valor_nf: float
-
-# === Tabelas ===
-TABELA_DIFAL = {
-    'São Paulo': 0.00,
-    'Minas Gerais': 0.06,
-    'Rio De Janeiro': 0.08,
-}
-TABELA_FCP = {
-    'Rio De Janeiro': 0.02,
-}
-TABELA_ICMS_FRETE = {
-    'São Paulo': 0.18,
-    'Minas Gerais': 0.12,
-    'Rio De Janeiro': 0.12,
-}
+# Tabelas fixas
 TABELA_SALIS = {
-    ('São Paulo', 'Capital'): 0.03,
-    ('São Paulo', 'Interior'): 0.04,
-    ('Minas Gerais', 'Capital'): 0.06,
+    ("Acre", "Capital"): 0.22, ("Acre", "Interior"): 0.23,
+    ("Alagoas", "Capital"): 0.12, ("Alagoas", "Interior"): 0.12,
+    ("Amapá", "Capital"): 0.27, ("Amapá", "Interior"): 0.28,
+    ("Amazonas", "Capital"): 0.27, ("Amazonas", "Interior"): 0.28,
+    ("Bahia", "Capital"): 0.10, ("Bahia", "Interior"): 0.11,
+    ("Ceará", "Capital"): 0.14, ("Ceará", "Interior"): 0.15,
+    ("DF - Difal 5%", "Capital"): 0.09, ("DF - Difal 13%", "Capital"): 0.09,
+    ("Espírito Santo", "Capital"): 0.08, ("Espírito Santo", "Interior"): 0.09,
+    ("Goiás", "Capital"): 0.09, ("Goiás", "Interior"): 0.10,
+    ("Maranhão", "Capital"): 0.15, ("Maranhão", "Interior"): 0.16,
+    ("Mato Grosso", "Capital"): 0.12, ("Mato Grosso", "Interior"): 0.13,
+    ("Mato Grosso do Sul", "Capital"): 0.10, ("Mato Grosso do Sul", "Interior"): 0.11,
+    ("Minas Gerais", "Capital"): 0.06, ("Minas Gerais", "Interior"): 0.07,
+    ("Pará", "Capital"): 0.15, ("Pará", "Interior"): 0.16,
+    ("Paraíba", "Capital"): 0.13, ("Paraíba", "Interior"): 0.14,
+    ("Paraná", "Capital"): 0.06, ("Paraná", "Interior"): 0.07,
+    ("Pernambuco", "Capital"): 0.12, ("Pernambuco", "Interior"): 0.13,
+    ("Piauí", "Capital"): 0.14, ("Piauí", "Interior"): 0.15,
+    ("Rio De Janeiro", "Capital"): 0.05, ("Rio De Janeiro", "Interior"): 0.06,
+    ("Rio Grande Do Norte", "Capital"): 0.14, ("Rio Grande Do Norte", "Interior"): 0.15,
+    ("Rio Grande Do Sul", "Capital"): 0.08, ("Rio Grande Do Sul", "Interior"): 0.09,
+    ("Rondônia", "Capital"): 0.22, ("Rondônia", "Interior"): 0.23,
+    ("Roraima", "Capital"): None, ("Roraima", "Interior"): None,
+    ("Santa Catarina", "Capital"): 0.07, ("Santa Catarina", "Interior"): 0.08,
+    ("Sergipe", "Capital"): 0.11, ("Sergipe", "Interior"): 0.12,
+    ("Tocantins", "Capital"): 0.12, ("Tocantins", "Interior"): 0.13
+}
+TABELA_DIFAL = {
+    'Acre': 0.12, 'Alagoas': 0.12, 'Amazonas': 0.13, 'Amapá': 0.13, 'Bahia': 0.135, 'Ceará': 0.13,
+    'DF - Difal 5%': 0.05, 'DF - Difal 13%': 0.13, 'Espírito Santo': 0.10, 'Goiás': 0.12, 'Maranhão': 0.15,
+    'Minas Gerais': 0.06, 'Mato Grosso do Sul': 0.10, 'Mato Grosso': 0.10, 'Paraná': 0.075, 'Pará': 0.12,
+    'Paraíba': 0.13, 'Pernambuco': 0.135, 'Piauí': 0.14, 'Rio De Janeiro': 0.08, 'Rio Grande Do Norte': 0.13,
+    'Rio Grande Do Sul': 0.05, 'Rondônia': 0.125, 'Roraima': 0.13, 'Santa Catarina': 0.05, 'Sergipe': 0.12,
+    'Tocantins': 0.13, 'São Paulo': 0.0
+}
+TABELA_FCP = {'Alagoas': 0.01, 'Rio De Janeiro': 0.02, 'Sergipe': 0.01}
+TABELA_ICMS = {
+    'Acre': 0.07, 'Alagoas': 0.07, 'Amazonas': 0.07, 'Amapá': 0.07, 'Bahia': 0.07, 'Ceará': 0.07,
+    'DF - Difal 5%': 0.07, 'DF - Difal 13%': 0.07, 'Espírito Santo': 0.07, 'Goiás': 0.07, 'Maranhão': 0.07,
+    'Minas Gerais': 0.12, 'Mato Grosso do Sul': 0.07, 'Mato Grosso': 0.07, 'Paraná': 0.12, 'Pará': 0.07,
+    'Paraíba': 0.07, 'Pernambuco': 0.07, 'Piauí': 0.07, 'Rio De Janeiro': 0.12, 'Rio Grande Do Norte': 0.07,
+    'Rio Grande Do Sul': 0.12, 'Rondônia': 0.07, 'Roraima': 0.07, 'Santa Catarina': 0.12, 'Sergipe': 0.07,
+    'Tocantins': 0.07, 'São Paulo': 0.18
 }
 
-# === Funções de cálculo ===
-def calcular_frete(entrada: Entrada) -> float:
-    if entrada.tipo_frete in ["assistência técnica", "coleta"]:
-        if entrada.distancia_km <= 100:
-            return 280.0
-        else:
-            return 0.0
-    if entrada.tipo_calculo_frete == "calcular":
-        if entrada.distancia_km <= 100:
-            return entrada.valor_produtos * (0.03 if entrada.horario_entrega == "Comercial" else 0.04)
-        else:
-            base = max(entrada.valor_produtos, 30000)
-            perc = TABELA_SALIS.get((entrada.estado_destino, entrada.cidade), 0)
-            return base * perc
-    elif entrada.tipo_calculo_frete == "negociado":
-        return entrada.valor_frete_negociado
-    else:
-        return 0.0
+# Funções utilitárias
+def formatar(valor):
+    return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
-def calcular_montagem(entrada: Entrada) -> float:
-    if entrada.tipo_calculo_montagem == "calcular":
-        if entrada.grande_sp:
-            return entrada.valor_produtos * 0.035
-        else:
-            return entrada.valor_produtos * 0.035 + entrada.distancia_km * 2 * 3.5
-    elif entrada.tipo_calculo_montagem == "negociado":
-        return entrada.valor_montagem_negociado
-    else:
-        return 0.0
-
-def calcular_multiplicador(entrada: Entrada, frete: float, montagem: float) -> float:
-    base = 500000
-    difal = base * TABELA_DIFAL.get(entrada.estado_destino, 0)
-    ipi = base * 0.0325 / (1 + 0.0325)
-    icms = base * TABELA_ICMS_FRETE.get(entrada.estado_destino, 0)
-    fcp = base * TABELA_FCP.get(entrada.estado_destino, 0)
-    base_liquida = base - ipi
-    pis_cofins = base_liquida * 0.0365
-    irpj = base_liquida * 0.08 * 0.25
-    csll = base_liquida * 0.12 * 0.09
-    tributos = difal + ipi + icms + fcp + pis_cofins + irpj + csll
-    frete_liquido = base - tributos
-    if frete_liquido == 0:
-        raise ValueError("Erro: Frete líquido igual a 0")
-    return round(base / frete_liquido, 5)
-
-def calcular_difal_fcp_ipi(entrada: Entrada, frete_final: float, montagem_final: float):
-    difal_pct = TABELA_DIFAL.get(entrada.estado_destino, 0)
-    fcp_pct = TABELA_FCP.get(entrada.estado_destino, 0)
-    ipi_pct = 0.0325
-    base1 = (entrada.valor_produtos + frete_final + montagem_final) / (1 - difal_pct - fcp_pct)
-    base2 = 1 - ((ipi_pct * (1 - difal_pct - fcp_pct)) / (1 + ipi_pct))
-    base_difal = base1 / base2
-    guia_difal = base_difal * difal_pct
-    guia_fcp = base_difal * fcp_pct
-    valor_ipi = base_difal * ipi_pct / (1 + ipi_pct)
-    return guia_difal, guia_fcp, valor_ipi, base_difal
-
-def calcular_nf(entrada: Entrada) -> Resultado:
-    frete_bruto = calcular_frete(entrada)
-    montagem_bruta = calcular_montagem(entrada)
-    multiplicador = calcular_multiplicador(entrada, frete_bruto, montagem_bruta)
-    frete_final = round(frete_bruto * multiplicador, 2)
-    montagem_final = round(montagem_bruta * multiplicador, 2)
-    guia_difal, guia_fcp, valor_ipi, base_difal = calcular_difal_fcp_ipi(entrada, frete_final, montagem_final)
-    despesas_acessorias = base_difal - entrada.valor_produtos - frete_final - valor_ipi
-    valor_nf = round(entrada.valor_produtos + frete_final + valor_ipi + despesas_acessorias, 2)
-    return Resultado(frete_final, montagem_final, multiplicador, round(guia_difal, 2), round(guia_fcp, 2), round(valor_ipi, 2), valor_nf)
-
-# === Interface Streamlit ===
-st.title("Simulador de Frete e Tributos - Minimal")
-st.markdown("Insira os dados abaixo:")
-
+# Formulário Streamlit
 with st.form("formulario"):
-    valor_produtos = st.number_input("Valor dos Produtos (com ICMS)", min_value=0.0)
-    estado_destino = st.selectbox("Estado de destino", list(TABELA_DIFAL.keys()))
-    cidade = st.radio("Cidade", ["Capital", "Interior"])
-    horario_entrega = st.radio("Horário da entrega", ["Comercial", "Fora do comercial"])
-    inscricao_estadual = st.radio("Cliente possui inscrição estadual?", ["Sim", "Não"]) == "Sim"
-    tipo_frete = st.selectbox("Tipo de frete", ["entrega normal", "assistência técnica", "coleta"])
-    tipo_calculo_frete = st.selectbox("Frete", ["calcular", "negociado", "nao contratar"])
-    valor_frete_negociado = st.number_input("Valor negociado do frete", min_value=0.0)
-    tipo_calculo_montagem = st.selectbox("Montagem", ["calcular", "negociado", "nao contratar"])
-    valor_montagem_negociado = st.number_input("Valor negociado da montagem", min_value=0.0)
-    distancia_km = st.number_input("Distância ida (km)", min_value=0.0)
-    grande_sp = st.checkbox("Entrega na Grande São Paulo?", value=True)
-    submitted = st.form_submit_button("Calcular")
+    valor_produtos = st.number_input("Valor dos produtos (com ICMS embutido)", min_value=0.0, format="%.2f")
+    estado = st.selectbox("Estado de destino (UF)", list(TABELA_DIFAL.keys()))
+    cidade = st.selectbox("Cidade de destino", ["Capital", "Interior"])
+    horario = st.radio("Horário da entrega", ["Comercial", "Fora do comercial"])
+    tem_ie = st.radio("Cliente possui inscrição estadual?", ["Sim", "Não"])
+    frete_opcao = st.radio("Frete", ["Calcular Salis", "Informar valor negociado", "Não contratar"])
+    montagem_opcao = st.radio("Montagem", ["Calcular automaticamente", "Valor negociado", "Não contratar"])
 
-if submitted:
-    entrada = Entrada(
-        valor_produtos=valor_produtos,
-        estado_destino=estado_destino,
-        cidade=cidade,
-        horario_entrega=horario_entrega,
-        inscricao_estadual=inscricao_estadual,
-        tipo_frete=tipo_frete,
-        tipo_calculo_frete=tipo_calculo_frete,
-        valor_frete_negociado=valor_frete_negociado,
-        tipo_calculo_montagem=tipo_calculo_montagem,
-        valor_montagem_negociado=valor_montagem_negociado,
-        distancia_km=distancia_km,
-        grande_sp=grande_sp
-    )
+    frete_negociado = 0
+    montagem_negociada = 0
+    km_ida_volta = 0
+    if frete_opcao == "Informar valor negociado":
+        frete_negociado = st.number_input("Valor negociado do frete", min_value=0.0, format="%.2f")
+    if montagem_opcao == "Valor negociado":
+        montagem_negociada = st.number_input("Valor negociado da montagem", min_value=0.0, format="%.2f")
+    if montagem_opcao == "Calcular automaticamente" and estado != "São Paulo":
+        km_ida_volta = st.number_input("Distância ida e volta (km) de Barueri-SP", min_value=0.0, format="%.2f")
 
-    try:
-        resultado = calcular_nf(entrada)
-        st.success("Cálculo realizado com sucesso!")
-        st.write(f"**Frete Final:** R$ {resultado.frete_final:.2f}")
-        st.write(f"**Montagem Final:** R$ {resultado.montagem_final:.2f}")
-        st.write(f"**Multiplicador de Carga Tributária:** {resultado.multiplicador:.5f}")
-        st.write(f"**Guia DIFAL:** R$ {resultado.guia_difal:.2f}")
-        st.write(f"**Guia FCP:** R$ {resultado.guia_fcp:.2f}")
-        st.write(f"**Valor IPI:** R$ {resultado.valor_ipi:.2f}")
-        st.write(f"**Valor Final da NF:** R$ {resultado.valor_nf:.2f}")
-    except Exception as e:
-        st.error(str(e))
+    submit = st.form_submit_button("Calcular")
+
+if submit:
+    st.info("Entradas capturadas com sucesso. Calculando...")
+
+    # Aqui serão implementadas as etapas 1 a 4 conforme combinado:
+    # 1. Cálculo do frete (Salis)
+    # 2. Montagem
+    # 3. Multiplicador de carga tributária
+    # 4. Cálculo do DIFAL / FCP / IPI / Valor NF
+
+    # 1. Cálculo do Frete (Salis)
+    frete_base = Decimal(0)
+    if frete_opcao == "Calcular Salis":
+        if estado == "São Paulo":
+            if cidade == "Capital" and horario == "Comercial":
+                frete_base = Decimal(valor_produtos) * Decimal("0.03")
+            elif cidade == "Capital" and horario == "Fora do comercial":
+                frete_base = Decimal(valor_produtos) * Decimal("0.04")
+            elif cidade == "Interior":
+                frete_base = Decimal(valor_produtos) * Decimal("0.04")
+        else:
+            if valor_produtos > 30000:
+                percentual = TABELA_SALIS.get((estado, cidade))
+                if percentual is not None:
+                    frete_base = Decimal(valor_produtos) * Decimal(percentual)
+                else:
+                    st.warning(f"Salis não atende {estado} - {cidade}.")
+                    frete_base = Decimal(0)
+            else:
+                percentual = TABELA_SALIS.get((estado, cidade))
+                if percentual is not None:
+                    frete_base = Decimal("30000.00") * Decimal(percentual)
+                else:
+                    st.warning(f"Salis não atende {estado} - {cidade}.")
+                    frete_base = Decimal(0)
+    elif frete_opcao == "Informar valor negociado":
+        frete_base = Decimal(frete_negociado)
+    elif frete_opcao == "Não contratar":
+        frete_base = Decimal(0)
+
+    st.success(f"Cotação do frete: {formatar(frete_base)}")
+
+    # 2. Cálculo da Montagem
+    montagem_base = Decimal(0)
+    if montagem_opcao == "Calcular automaticamente":
+        if estado == "São Paulo" and cidade == "Capital":
+            montagem_base = Decimal(valor_produtos) * Decimal("0.035")
+        else:
+            valor_base = Decimal(valor_produtos) * Decimal("0.035")
+            custo_km = Decimal(km_ida_volta) * Decimal("3.50")
+            montagem_base = valor_base + custo_km
+    elif montagem_opcao == "Valor negociado":
+        montagem_base = Decimal(montagem_negociada)
+    elif montagem_opcao == "Não contratar":
+        montagem_base = Decimal(0)
+
+    st.success(f"Cotação da montagem: {formatar(montagem_base)}")
+
+    # 3. Cálculo do Multiplicador de Carga Tributária
+    BASE = Decimal("500000")
+    IPI = Decimal("0.0325")
+    ICMS = Decimal(TABELA_ICMS.get(estado, 0))
+    DIFAL = Decimal(TABELA_DIFAL.get(estado, 0))
+    FCP = Decimal(TABELA_FCP.get(estado, 0))
+
+    ipi_frete = BASE * IPI / (1 + IPI)
+    icms_frete = BASE * ICMS
+    base_liquida = BASE - ipi_frete
+    pis_cofins = base_liquida * Decimal("0.0365")
+    irpj = base_liquida * Decimal("0.08") * Decimal("0.25")
+    csll = base_liquida * Decimal("0.12") * Decimal("0.09")
+
+    if tem_ie == "Não":
+        difal_frete = BASE * DIFAL
+        fcp_frete = BASE * FCP
+        t_imp_frete = ipi_frete + icms_frete + pis_cofins + irpj + csll + difal_frete + fcp_frete
+    else:
+        t_imp_frete = ipi_frete + icms_frete + pis_cofins + irpj + csll
+
+    frete_liquido = BASE - t_imp_frete
+    if frete_liquido == 0:
+        st.error("Erro: Frete líquido igual a zero. Divisão por zero não permitida.")
+        multiplicador = Decimal("1.0")
+    else:
+        multiplicador = BASE / frete_liquido
+
+    frete_final = frete_base * multiplicador
+    montagem_final = montagem_base * multiplicador
+
+    st.success(f"Multiplicador: {multiplicador:.5f}")
+    st.success(f"Valor do Frete final: {formatar(frete_final)}")
+    st.success(f"Valor da Montagem final: {formatar(montagem_final)}")
+
+    # 4. Cálculo de DIFAL/FCP/IPI/Nota Fiscal
+    if tem_ie == "Não":
+        base_difal1 = (Decimal(valor_produtos) + frete_final + montagem_final) / (1 - DIFAL - FCP)
+        base_difal2 = 1 - ((IPI * (1 - DIFAL - FCP)) / (1 + IPI))
+        base_difal = base_difal1 / base_difal2
+
+        guia_difal = base_difal * DIFAL
+        guia_fcp = base_difal * FCP
+        valor_ipi = base_difal * IPI / (1 + IPI)
+
+        difal_embutido = ((base_difal - Decimal(valor_produtos) - frete_final - montagem_final - valor_ipi) * DIFAL) / (DIFAL + FCP) if (DIFAL + FCP) != 0 else Decimal(0)
+        fcp_embutido = base_difal - Decimal(valor_produtos) - frete_final - montagem_final - difal_embutido - valor_ipi
+    else:
+        base_difal1 = (Decimal(valor_produtos) + frete_final + montagem_final) / 1
+        base_difal2 = 1 - IPI * (1 + IPI)
+        base_difal = base_difal1 / base_difal2
+
+        guia_difal = Decimal(0)
+        guia_fcp = Decimal(0)
+        valor_ipi = base_difal * IPI / (1 + IPI)
+
+        difal_embutido = Decimal(0)
+        fcp_embutido = Decimal(0)
+
+    despesas_acessorias = base_difal - Decimal(valor_produtos) - frete_final - valor_ipi
+    valor_nf = Decimal(valor_produtos) + frete_final + valor_ipi + despesas_acessorias
+
+    # Resultados finais
+    st.subheader("Valores Calculados")
+    st.write(f"Cotação do frete: {formatar(frete_base)}")
+    st.write(f"Cotação da montagem: {formatar(montagem_base)}")
+    st.write(f"Difal embutido: {formatar(difal_embutido)}")
+    st.write(f"FCP embutido: {formatar(fcp_embutido)}")
+
+    st.subheader("Resumo da Nota Fiscal")
+    st.write(f"Valor dos produtos: {formatar(Decimal(valor_produtos))}")
+    st.write(f"Valor do Frete: {formatar(frete_final)}")
+    st.write(f"Valor da Montagem: {formatar(montagem_final)}")
+    st.write(f"Despesas acessórias: {formatar(despesas_acessorias)}")
+    st.write(f"Valor do IPI: {formatar(valor_ipi)}")
+    st.write(f"Valor da NF: {formatar(valor_nf)}")
+
+    st.subheader("Guias")
+    st.write(f"Guia Difal: {formatar(guia_difal)}")
+    st.write(f"Guia FCP: {formatar(guia_fcp)}")
