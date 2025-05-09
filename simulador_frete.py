@@ -295,7 +295,7 @@ if submit:
     c.drawImage("logo_minimal.png", 40, 805, width=70, preserveAspectRatio=True, mask='auto')
     c.setFont("Helvetica-Bold", 14)
     c.setFillColorRGB(0.333, 0.525, 0.6)  # Azul do logo
-    c.drawString(150, 830, "Orçamento - Minimal Design")
+    c.drawString(150, 830, "Calculadora Comercial - Minimal Design")
     c.setFillColorRGB(0, 0, 0)
     c.setFont("Helvetica", 10)
 
