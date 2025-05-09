@@ -300,212 +300,130 @@ if submit:
     c.setFont("Helvetica", 10)
 
     linha = 800
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Data: {data}")
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
-    linha -= 12
-    
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Cliente: {cliente}")
+    c.drawString(40, linha, "Data:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
-    
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    c.drawString(160, linha, str(data))
+
+    # Cliente
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Orçamento: {orcamento}")
+    c.drawString(40, linha, "Cliente:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
-    
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
-    linha -= 30
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Valor dos produtos: {formatar(Decimal(valor_produtos))}")
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
-    linha -= 12
-    
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    c.drawString(160, linha, cliente)
+
+    # Orçamento
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Estado destino: {estado} - {cidade} ({horario})")
+    c.drawString(40, linha, "Orçamento:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
-    
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    c.drawString(160, linha, orcamento)
+
+    # Valor dos produtos
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Frete: {formatar(frete_final)}")
+    c.drawString(40, linha, "Valor dos produtos:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
-    
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    c.drawString(160, linha, formatar(Decimal(valor_produtos)))
+
+    # Frete
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Montagem: {formatar(montagem_final)}")
+    c.drawString(40, linha, "Frete:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(160, linha, formatar(frete_final))
     
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    # Montagem
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Multiplicador: {multiplicador:.5f}")
+    c.drawString(40, linha, "Montagem:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(160, linha, formatar(montagem_final))
     
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    # Multiplicador
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Difal embutido: {formatar(difal_embutido)}")
+    c.drawString(40, linha, "Multiplicador:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(160, linha, f"{multiplicador:.5f}")
     
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    # Difal embutido
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"FCP embutido: {formatar(fcp_embutido)}")
+    c.drawString(40, linha, "Difal embutido:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(160, linha, formatar(difal_embutido))
     
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    # FCP embutido
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Despesas acessórias: {formatar(despesas_acessorias)}")
+    c.drawString(40, linha, "FCP embutido:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(160, linha, formatar(fcp_embutido))
     
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    # Despesas acessórias
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Valor do IPI: {formatar(valor_ipi)}")
+    c.drawString(40, linha, "Despesas acessórias:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(160, linha, formatar(despesas_acessorias))
     
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    # Valor do IPI
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Valor da NF: {formatar(valor_nf)}")
+    c.drawString(40, linha, "Valor do IPI:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(160, linha, formatar(valor_ipi))
     
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    # Valor da NF
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, "Guia Difal: ")
+    c.drawString(40, linha, "Valor da NF:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    c.drawString(200, linha, f"{Guia Difal: }")
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(160, linha, formatar(valor_nf))
     
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0, 0, 0)
+    # Guia Difal
     linha -= 15
     c.setFont("Helvetica-Bold", 10)
     c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.setFont("Helvetica-Bold", 10)
-    c.setFillColorRGB(0.333, 0.525, 0.6)
-    c.drawString(40, linha, f"Guia FCP: {formatar(guia_fcp)}")
+    c.drawString(40, linha, "Guia Difal:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
-    linha -= 12
+    c.drawString(160, linha, formatar(guia_difal))
     
+    # Guia FCP
+    linha -= 15
+    c.setFont("Helvetica-Bold", 10)
+    c.setFillColorRGB(0.333, 0.525, 0.6)
+    c.drawString(40, linha, "Guia FCP:")
     c.setFont("Helvetica", 10)
     c.setFillColorRGB(0, 0, 0)
+    c.drawString(160, linha, formatar(guia_fcp))
 
     c.showPage()
     c.save()
